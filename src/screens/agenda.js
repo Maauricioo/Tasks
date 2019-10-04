@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, ImageBackground, StyleSheet } from 'react-native'
+import { View, Text, ImageBackground, StyleSheet, FlatList } from 'react-native'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 import todayImage from '../../assets/imgs/today.jpg'
@@ -7,6 +7,46 @@ import commonStyles from '../commonStyles'
 import Task from '../components/Task'
 
 export default class screens extends Component {
+
+    state = {
+        tasks: [
+            {
+                id: Math.random(), desc: 'Lorem ipsum 1', estimateAt: new Date(), doneAt: new Date()
+            },
+            {
+                id: Math.random(), desc: 'Lorem ipsum 2', estimateAt: new Date(), doneAt: null
+            },
+            {
+                id: Math.random(), desc: 'Lorem ipsum 1', estimateAt: new Date(), doneAt: new Date()
+            },
+            {
+                id: Math.random(), desc: 'Lorem ipsum 2', estimateAt: new Date(), doneAt: null
+            },
+            {
+                id: Math.random(), desc: 'Lorem ipsum 1', estimateAt: new Date(), doneAt: new Date()
+            },
+            {
+                id: Math.random(), desc: 'Lorem ipsum 2', estimateAt: new Date(), doneAt: null
+            },
+            {
+                id: Math.random(), desc: 'Lorem ipsum 1', estimateAt: new Date(), doneAt: new Date()
+            },
+            {
+                id: Math.random(), desc: 'Lorem ipsum 2', estimateAt: new Date(), doneAt: null
+            },
+        ]
+    }
+
+    toggleTask = id => {
+        const tasks = [...this.state.tasks]
+        tasks.forEach(task => {
+            if (task.id === id) {
+                task.doneAt = task.doneAt ? null : new Date()
+            }
+        })
+        this.setState({ tasks })
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -17,8 +57,7 @@ export default class screens extends Component {
                     </View>
                 </ImageBackground>
                 <View style={styles.tasksContainer}>
-                    <Task desc='Tarefa pendente' estimateAt={new Date()} doneAt={null}/>
-                    <Task desc='Tarefa concluida' estimateAt={new Date()} doneAt={new Date()}/>
+                    <FlatList data={this.state.tasks} keyExtractor={item => `${item.id}`} renderItem={({ item }) => <Task {...item} toggleTask={this.toggleTask} />} />
                 </View>
             </View>
         )
@@ -26,7 +65,7 @@ export default class screens extends Component {
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1
     },
     background: {
