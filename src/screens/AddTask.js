@@ -25,7 +25,7 @@ export default class screens extends Component {
 
     state = { ...initalState }
 
-    save = () => {
+    onSave = () => {
         if (!this.state.desc.trim()) {
             Alert.alert('Dados inválidos', 'Informe  uma descrição para a tarefa')
             return

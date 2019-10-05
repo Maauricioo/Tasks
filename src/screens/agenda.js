@@ -6,7 +6,8 @@ import {
     StyleSheet,
     FlatList,
     TouchableOpacity,
-    Platform
+    Platform,
+    AsyncStorage
 } from 'react-native'
 import moment from 'moment'
 import 'moment/locale/pt-br'
@@ -20,32 +21,7 @@ import AddTask from './AddTask'
 export default class screens extends Component {
 
     state = {
-        tasks: [
-            {
-                id: Math.random(), desc: 'Lorem ipsum 1', estimateAt: new Date(), doneAt: new Date()
-            },
-            {
-                id: Math.random(), desc: 'Lorem ipsum 2', estimateAt: new Date(), doneAt: null
-            },
-            {
-                id: Math.random(), desc: 'Lorem ipsum 1', estimateAt: new Date(), doneAt: new Date()
-            },
-            {
-                id: Math.random(), desc: 'Lorem ipsum 2', estimateAt: new Date(), doneAt: null
-            },
-            {
-                id: Math.random(), desc: 'Lorem ipsum 1', estimateAt: new Date(), doneAt: new Date()
-            },
-            {
-                id: Math.random(), desc: 'Lorem ipsum 2', estimateAt: new Date(), doneAt: null
-            },
-            {
-                id: Math.random(), desc: 'Lorem ipsum 1', estimateAt: new Date(), doneAt: new Date()
-            },
-            {
-                id: Math.random(), desc: 'Lorem ipsum 2', estimateAt: new Date(), doneAt: null
-            },
-        ],
+        tasks: [],
         visibleTasks: [],
         showDoneTasks: true,
         showAddTask: false,
@@ -62,6 +38,11 @@ export default class screens extends Component {
         this.setState({ tasks, showAddTask: false }, this.filterTasks)
     }
 
+    deleteTask = id => {
+        const tasks = this.state.tasks.filter(task => task.id !== id)
+        this.setState({ tasks }, this.filterTasks)
+    }
+
     filterTasks = () => {
         let visibleTasks = true
         if (this.state.showDoneTasks) {
@@ -71,14 +52,17 @@ export default class screens extends Component {
             visibleTasks = [...this.state.tasks]
         }
         this.setState({ visibleTasks })
+        AsyncStorage.setItem('tasks', JSON.stringify(this.state.tasks))
     }
 
     toggleFilter = () => {
         this.setState({ showDoneTasks: !this.state.showDoneTasks }, this.filterTasks)
     }
 
-    componentDidMount = () => {
-        this.filterTasks()
+    componentDidMount = async () => {
+        const data = await AsyncStorage.getItem('tasks')
+        const tasks = JSON.parse(data) || []
+        this.setState({tasks}, this.filterTasks)
     }
 
     toggleTask = id => {
@@ -107,7 +91,8 @@ export default class screens extends Component {
                     </View>
                 </ImageBackground>
                 <View style={styles.tasksContainer}>
-                    <FlatList data={this.state.visibleTasks} keyExtractor={item => `${item.id}`} renderItem={({ item }) => <Task {...item} toggleTask={this.toggleTask} />} />
+                    <FlatList data={this.state.visibleTasks} keyExtractor={item => `${item.id}`} renderItem={({ item }) =>
+                        <Task {...item} toggleTask={this.toggleTask} onDelete={this.deleteTask} />} />
                 </View>
                 <ActionButton buttonColor={commonStyles.colors.today} onPress={() => { this.setState({ showAddTask: true }) }} />
             </View>
