@@ -7,16 +7,17 @@ import {
     FlatList,
     TouchableOpacity,
     Platform,
-    AsyncStorage
+    ToastAndroid
 } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 import todayImage from '../../assets/imgs/today.jpg'
 import commonStyles from '../commonStyles'
 import Task from '../components/Task'
-import Icon from 'react-native-vector-icons/FontAwesome'
-import ActionButton from 'react-native-action-button'
 import AddTask from './AddTask'
+import {Icon} from 'native-base'
+import Icons from 'react-native-vector-icons/FontAwesome'
 
 export default class screens extends Component {
 
@@ -45,7 +46,7 @@ export default class screens extends Component {
 
     filterTasks = () => {
         let visibleTasks = true
-        if (this.state.showDoneTasks) {
+        if (!this.state.showDoneTasks) {
             const pending = task => task.doneAt
             visibleTasks = this.state.tasks.filter(pending)
         } else {
@@ -57,6 +58,8 @@ export default class screens extends Component {
 
     toggleFilter = () => {
         this.setState({ showDoneTasks: !this.state.showDoneTasks }, this.filterTasks)
+        this.state.showDoneTasks ? ToastAndroid.show('Estas são as tarefas concluídas', ToastAndroid.SHORT) : ToastAndroid.show('Estas são todas as tarefas', ToastAndroid.SHORT)
+        
     }
 
     componentDidMount = async () => {
@@ -82,7 +85,7 @@ export default class screens extends Component {
                 <ImageBackground source={todayImage} style={styles.background}>
                     <View style={styles.iconBar}>
                         <TouchableOpacity onPress={this.toggleFilter}>
-                            <Icon name={this.state.showDoneTasks ? 'eye' : 'eye-slash'} size={20} color={commonStyles.colors.secondary} />
+                            <Icons name={this.state.showDoneTasks ? 'eye' : 'eye-slash'} size={20} color={commonStyles.colors.secondary} />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.titleBar}>
@@ -94,7 +97,14 @@ export default class screens extends Component {
                     <FlatList data={this.state.visibleTasks} keyExtractor={item => `${item.id}`} renderItem={({ item }) =>
                         <Task {...item} toggleTask={this.toggleTask} onDelete={this.deleteTask} />} />
                 </View>
-                <ActionButton buttonColor={commonStyles.colors.today} onPress={() => { this.setState({ showAddTask: true }) }} />
+                <View style={styles.viewAdd}>
+                <TouchableOpacity style={styles.btn} onPress={() => { this.setState({showAddTask: true}) }}>
+                    <Icon
+                        name='add'
+                        style={{ color: commonStyles.colors.secondary }}
+                    />
+                </TouchableOpacity>
+                </View>
             </View>
         )
     }
@@ -133,5 +143,24 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         flexDirection: 'row',
         justifyContent: 'flex-end',
-    }
+    },
+    btn: {
+        borderColor: commonStyles.colors.today,
+        borderWidth: 3,
+        backgroundColor: commonStyles.colors.today,
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 50,
+        position: 'absolute',
+    },
+    viewAdd: {
+        backgroundColor: (0, 0, 0),
+        position: 'absolute',
+        height: 50,
+        width: 50,
+        bottom: 40,
+        right: 20
+    },
 })
