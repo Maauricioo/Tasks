@@ -6,7 +6,7 @@
 
 ![](src/img/Screenshot_2.png)
 
-<p>Ao clicar no olho no canto superior direito, serão exibidas todas as tarefas concluídas. Quando clicado novamente mostrará todas as tarefas novamente.</p>
+<p>Ao clicar no olho no canto superior direito, serão exibidas as tarefas concluídas. Quando clicado novamente mostrará todas as tarefas novamente.</p>
 
 ![](src/img/Screenshot_3.png)
 
