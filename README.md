@@ -6,9 +6,9 @@
 
 ![](src/img/Screenshot_2.png)
 
-![](src/img/Screenshot_3.png)
-
 <p>Ao clicar no olho no canto superior direito, serão exibidas todas as tarefas concluídas. Quando clicado novamente mostrará todas as tarefas novamente.</p>
+
+![](src/img/Screenshot_3.png)
 
 <h3>Instalação</h3>
 <ul>
